@@ -1,6 +1,6 @@
 # Line Chat Translator
 
-A minimal CLI to translate Thai/English text via OpenAI or Gemini APIs, with token and cost logging.
+A minimal CLI to translate Thai/English text via OpenAI or Gemini APIs, with token and cost logging (THB-first display).
 
 ## Quick Start
 - Python: 3.9+
@@ -16,11 +16,11 @@ A minimal CLI to translate Thai/English text via OpenAI or Gemini APIs, with tok
 - Gemini: `python translator_test_logged.py gemini "สวัสดี"`
 - Help: `python translator_test_logged.py`
 
-Outputs translation plus token counts, estimated cost, and duration. Appends a JSON line to `translation_log.jsonl`.
+Outputs translation plus token counts, estimated cost (฿ first, US$ in parentheses), and duration. Appends a JSON line to `translation_log.jsonl`.
 
 ## Files
 - `translator_test_logged.py` — CLI entrypoint.
-- `translation_log.jsonl` — JSONL log (ignored by Git).
+- `translation_log.jsonl` — JSONL log (ignored by Git) including `estimated_cost_thb` and `estimated_cost_usd`.
 - `.env` — API keys (ignored). See `AGENTS.md` for contributor details.
 
 ## Notes
@@ -29,4 +29,3 @@ Outputs translation plus token counts, estimated cost, and duration. Appends a J
 
 ## License
 MIT — see `LICENSE`.
-

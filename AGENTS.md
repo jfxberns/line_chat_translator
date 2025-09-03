@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 - Source: `translator_test_logged.py` — CLI to translate Thai/English via OpenAI or Gemini APIs and log usage.
-- Logs: `translation_log.jsonl` — JSONL line per run (tokens, cost, duration). Safe to delete if too large.
+- Logs: `translation_log.jsonl` — JSONL line per run (tokens, costs THB/USD, duration). Safe to delete if too large.
 - Config: `.env` — `OPENAI_API_KEY`, `GEMINI_API_KEY` (never commit).
 
 ## Build, Test, and Development Commands
@@ -21,7 +21,7 @@
 ## Testing Guidelines
 - Current: no formal test suite. Prefer `pytest` for additions.
 - Layout: put tests under `tests/`, files named `test_*.py` mirroring CLI behavior.
-- Quick checks: run both providers with short input and confirm a new line in `translation_log.jsonl` containing `tokens_in`, `tokens_out`, and `estimated_cost`.
+- Quick checks: run both providers with short input and confirm a new line in `translation_log.jsonl` containing `tokens_in`, `tokens_out`, `estimated_cost_thb`, and `estimated_cost_usd`.
 
 ## Commit & Pull Request Guidelines
 - Commits: imperative, concise subject (e.g., "Add Gemini lite model"), with a brief rationale in the body if needed.
@@ -36,5 +36,4 @@
 - Handle HTTP errors and timeouts; prefer minimal API key scopes.
 
 ## Architecture Overview
-- Flow: parse args → map to provider/model → call API → print result → append JSONL log with tokens, cost, and duration.
-
+- Flow: parse args → map to provider/model → call API → print result (cost in THB first, USD in parentheses) → append JSONL log with tokens and both currency amounts.
