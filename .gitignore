@@ -1,0 +1,19 @@
+# Virtual environments
+.venv/
+.uv-cache/
+
+# Environment and local config
+.env
+
+# Logs and runtime artifacts
+translation_log.jsonl
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Test caches
+.pytest_cache/
+
+# OS cruft
+.DS_Store
