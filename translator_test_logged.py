@@ -42,7 +42,7 @@ def call_gpt5(text, model="gpt-5"):
     response = openai.ChatCompletion.create(
         model=model,
         messages=[
-            {"role": "system", "content": "You are a professional Thai-English translator."},
+            {"role": "system", "content": "You are a professional Thai-English translator. Return only the translation, no explanations."},
             {"role": "user", "content": text}
         ]
     )
@@ -53,21 +53,23 @@ def call_gpt5(text, model="gpt-5"):
     return content, tokens_in, tokens_out, total_tokens
 
 def call_gemini(text, model="gemini-2.5-pro"):
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+    if not GEMINI_API_KEY:
+        raise RuntimeError("GEMINI_API_KEY not set. Add it to your .env file.")
+    # Gemini Generative Language API expects the API key as a query parameter, not a Bearer token.
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}"
     headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {GEMINI_API_KEY}"
+        "Content-Type": "application/json"
     }
     data = {
         "contents": [
             {
                 "parts": [
-                    {"text": f"You are a professional Thai-English translator.\n\n{text}"}
+                    {"text": f"You are a professional Thai-English translator. Return only the translation, no explanations.\n\n{text}"}
                 ]
             }
         ]
     }
-    response = requests.post(url, headers=headers, data=json.dumps(data))
+    response = requests.post(url, headers=headers, json=data)
     response.raise_for_status()
     result = response.json()
     output = result["candidates"][0]["content"]["parts"][0]["text"]
@@ -105,11 +107,13 @@ def main():
         output, tokens_in, tokens_out, total_tokens = call_gemini(text, model)
     duration = round(time.time() - start, 3)
 
-    cost = estimate_cost(model, tokens_in, tokens_out)
+    cost_usd = estimate_cost(model, tokens_in, tokens_out)
+    # Display cost in THB first, with USD in parentheses (1 USD = 32 THB)
+    cost_thb = round(cost_usd * 32, 6)
 
     print(f"\n--- Translation Result ---\n{output}\n")
     print(f"Tokens In: {tokens_in} | Tokens Out: {tokens_out} | Total: {total_tokens}")
-    print(f"Estimated Cost: ${cost} | Time: {duration}s\n")
+    print(f"Estimated Cost: ฿{cost_thb} (US${cost_usd}) | Time: {duration}s\n")
 
     log_entry = {
         "timestamp": datetime.utcnow().isoformat(),
@@ -119,7 +123,8 @@ def main():
         "tokens_in": tokens_in,
         "tokens_out": tokens_out,
         "total_tokens": total_tokens,
-        "estimated_cost": cost,
+        "estimated_cost_usd": cost_usd,
+        "estimated_cost_thb": cost_thb,
         "duration_sec": duration
     }
     log_translation(log_entry)
