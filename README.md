@@ -1,6 +1,8 @@
-# Line Chat Translator
+# Line Chat Translator PoC
 
-A minimal CLI to translate Thai/English text via OpenAI or Gemini APIs, with token and cost logging (THB-first display).
+A minimal CLI to translate Thai/English text via OpenAI or Gemini APIs, with token and cost logging (THB-first display).  Performance using Gemini-Flash-Lite it was fast, accurate enough and the cost was very cheap.  
+
+Further development as a full-fledged Line Chatbot is feasible, but the value to me vs. the red-tape of setting up an auto-bot made me think twice about proceeding. 
 
 ## Quick Start
 - Python: 3.9+
